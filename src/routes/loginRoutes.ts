@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Router } from 'express';
 
 interface RequestWithBody extends Request {
-  body: {[key: string]: string | undefined }
+  body: { [key: string]: string | undefined };
 }
 
 const router = Router();
@@ -25,11 +25,19 @@ router.get('/login', (req: Request, res: Response) => {
 
 router.post('/login', (req: RequestWithBody, res: Response) => {
   const { email, password } = req.body;
-  // type gaurd
-  if (email){
-    res.send(email + password);
+  if (
+    email &&
+    password &&
+    email === 'hi@email.com' &&
+    password === 'password'
+  ) {
+    // mark person as logged in
+    req.session = { loggedIn: true };
+    // redirect them to root route
+    res.redirect('/');
   } else {
-    res.send('You must provide and email')
+    //
+    res.send('Invalid email or password');
   }
 });
 
