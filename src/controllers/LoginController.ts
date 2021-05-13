@@ -1,6 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { get, controller, bodyValidator, post } from './decorators';
 
+interface RequestWithBody extends Request {
+  body: { [key: string]: string | undefined };
+}
+
+function requireAuth(req: Request, res: Response, next: NextFunction): void {
+  if (req.session && req.session.loggedIn) {
+    next();
+    return;
+  }
+
+  res.status(403);
+  res.send('Not permitted');
+}
+
 @controller('/auth')
 class LoginController {
   @get('/login')
@@ -32,5 +46,11 @@ class LoginController {
     } else {
       res.send('Invalid email or password');
     }
+  }
+
+  @get('/logout')
+  getLogout(req: Request, res: Response) {
+    req.session = undefined;
+    res.redirect('/');
   }
 }
