@@ -1,24 +1,22 @@
-import { Router, NextFunction, Request, Response } from 'express';
-import {get} from './decorators/routes'
+import { Request, Response } from 'express';
+import { get, controller } from './decorators'
 
-@controller('/')
+@controller('/auth')
 class LoginController {
-  @get('login')
+  @get('/login')
   getLogin(req: Request, res: Response): void => {
-    if (req.session && req.session.loggedIn) {
-      res.send(`
+    res.send(`
+      <form method="POST">
+         <div>
+          <label>Email</label>
+          <input name="email" />
+        </div>
         <div>
-        <div>You are logged in.</div>
-        <a href="/logout">Logout</a>
-      </div>
-      `);
-    } else {
-      res.send(`
-      <div>
-        <div>You are not logged in.</div>
-        <a href="/login">Login</a>
-      </div>
-      `)
-    }
-  };
+          <label>Password</label>
+          <input name="password" type="password" />
+        </div>
+        <button>Submit</button>
+      </form>
+    `);
+  }
 }
